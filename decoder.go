@@ -23,36 +23,49 @@ type ExportRecords struct {
 }
 
 func formatExportTest(records []Record) []ExportRecords {
-	//var exportRecords []ExportRecords
-	exportRecords := make([]ExportRecords, len(records))
-	for i := 0; i < len(records); i++ {
-		exportRecords[i].Index = "a"
+	var exportRecords []ExportRecords
+	mappedExports := make(map[string][]Record)
+
+	for _, r := range records {
+		firstLetter := r.First[:1]
+		mappedExports[firstLetter] = append(mappedExports[firstLetter], r)
 	}
+
+	for k, v := range mappedExports {
+		exportRecords = append(exportRecords, ExportRecords{
+			Index:        k,
+			Records:      v,
+			TotalRecords: len(v),
+		})
+	}
+
+	sortRecords(exportRecords)
+
 	return exportRecords
 }
 
 func formatExport(records []Record) []ExportRecords {
 	//var exportRecords []ExportRecords
 
-	exportRecords := make([]ExportRecords, len(records))
-	for i := 0; i < len(records); i++ {
-		expRecords := exportRecords[i]
-
-		expRecords.Index = getIndex(records[i])
-
-		if records[i].First[:1] == records[i+1].First[:1] {
-			expRecords.Records = getIndexedRecords(records[i:])
-			expRecords.TotalRecords = getTotalRecords(expRecords.Records)
-			i += len(expRecords.Records) - 1
-
-		} else {
-			expRecords.Records = append(expRecords.Records, records[i])
-			expRecords.TotalRecords = getTotalRecords(expRecords.Records)
-			i += len(expRecords.Records) - 1
-		}
-
+	for _, r := range records {
+		fmt.Println(r)
 	}
-	fmt.Println(exportRecords)
+
+	exportRecords := make([]ExportRecords, len(records))
+	//for i := 0; i < len(records); i++ {
+	//	expRecords := exportRecords[i]
+	//
+	//	expRecords.Index = getIndex(records[i])
+	//
+	//	if records[i].First[:1] == records[i+1].First[:1] {
+	//		expRecords.Records = getIndexedRecords(records[i:])
+	//	} else {
+	//		expRecords.Records = append(expRecords.Records, records[i])
+	//	}
+	//	expRecords.TotalRecords = getTotalRecords(expRecords.Records)
+	//
+	//}
+	//fmt.Println(exportRecords)
 	return exportRecords
 }
 
@@ -89,10 +102,10 @@ func decode(body []byte) error {
 	uniqueRecords := removeDuplicates(records)
 
 	// sort records
-	sortedRecords := sortRecords(uniqueRecords)
+	//sortedRecords := sortRecords(uniqueRecords)
 
 	// format records
-	exportRecords := formatExport(sortedRecords)
+	exportRecords := formatExport(uniqueRecords)
 
 	//marshal the json and write it
 	err = writeJSON(exportRecords)
@@ -104,9 +117,9 @@ func decode(body []byte) error {
 }
 
 // Sorts records after first name.
-func sortRecords(records []Record) []Record {
+func sortRecords(records []ExportRecords) []ExportRecords {
 	sort.SliceStable(records, func(i, j int) bool {
-		return records[i].First[:1] < records[j].First[:1]
+		return records[i].Index < records[j].Index
 	})
 
 	return records
@@ -145,7 +158,7 @@ func testingRemoveDuplicates() {
 			Balance: "$6,996.45"},
 	}
 
-	formatExport(records)
+	formatExportTest(records)
 	//removeDuplicates(records)
 
 }
