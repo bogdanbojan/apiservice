@@ -6,24 +6,29 @@ import (
 	"sort"
 )
 
+// Record is the initial structure of the JSON from the API call. It is
+// unmarshalled here from the byte array given by reader.go with the getExportRecords function.
 type Record struct {
-	First   string `json:"first"`
-	Last    string `json:"last"`
-	Email   string `json:"email"`
-	Address string `json:"address"`
-	Created string `json:"created"`
-	Balance string `json:"balance"`
+	FirstName string `json:"first"`
+	LastName  string `json:"last"`
+	Email     string `json:"email"`
+	Address   string `json:"address"`
+	Created   string `json:"created"`
+	Balance   string `json:"balance"`
 }
 
+// ExportRecords holds the JSON structure for the exported data. It groups the records obtained by the API
+// with an Index (first letter of the FirstName) and holds all the records that satisfy that condition in Records.
 type ExportRecords struct {
 	Index        string   `json:"index"`
 	Records      []Record `json:"records"`
 	TotalRecords int      `json:"total-records"`
 }
 
-func decode(body []byte) ([]ExportRecords, error) {
+// getExportRecords unmarshals the JSON body data that is fetched from the API call. Then it processes
+// it returning an ExportRecords object.
+func getExportRecords(body []byte) ([]ExportRecords, error) {
 	var records []Record
-
 	err := json.Unmarshal(body, &records)
 	if err != nil {
 		return nil, fmt.Errorf("could not unmarshal body, err: %v", err)
@@ -34,6 +39,8 @@ func decode(body []byte) ([]ExportRecords, error) {
 	return exportRecords, nil
 }
 
+// processExport transforms the data, filtering out duplicates, groups them, and then
+// formats the records and, at last, sorts them.
 func processExport(records []Record) []ExportRecords {
 	uniqueRecords := removeDuplicates(records)
 	mappedExports := mapExport(uniqueRecords)
@@ -61,14 +68,14 @@ func mapExport(records []Record) map[string][]Record {
 	mappedExports := make(map[string][]Record)
 
 	for _, r := range records {
-		firstLetter := r.First[:1]
+		firstLetter := r.FirstName[:1]
 		mappedExports[firstLetter] = append(mappedExports[firstLetter], r)
 	}
 
 	return mappedExports
 }
 
-// Sorts records after first name.
+// sortRecords sorts the given records after the first letter of the persons' first name.
 func sortRecords(records []ExportRecords) []ExportRecords {
 	sort.SliceStable(records, func(i, j int) bool {
 		return records[i].Index < records[j].Index
@@ -77,6 +84,7 @@ func sortRecords(records []ExportRecords) []ExportRecords {
 	return records
 }
 
+// removeDuplicates gets rid of any duplicate entries from the provided records that come from the API call.
 func removeDuplicates(records []Record) []Record {
 	var uniqueRecords []Record // filter wo allocation
 	recordMap := make(map[Record]struct{})

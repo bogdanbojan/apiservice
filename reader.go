@@ -7,6 +7,7 @@ import (
 	"net/http"
 )
 
+// getBody returns the JSON, as a byte slice, which is fetched from the API call that was made to the const `url` found in process.go.
 func getBody(url string) ([]byte, error) {
 	res, err := http.Get(url)
 	if err != nil {

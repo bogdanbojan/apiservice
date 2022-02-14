@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 )
 
+// writeJSON exports the records after they have been filtered, formatted and grouped into
+// a JSON in the current user folder.
 func writeJSON(records []ExportRecords) error {
 	file, err := json.MarshalIndent(records, " ", "\t")
 	if err != nil {
