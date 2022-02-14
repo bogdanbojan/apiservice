@@ -1,9 +1,18 @@
 package main
 
-import "apiserv/driver"
+import (
+	"apiserv/driver"
+	"apiserv/read"
+	"apiserv/transform"
+	"apiserv/write"
+)
 
-// TODO: client, interfaces, change GET, additional calls if body length is not sufficient, packages and unit tests.
+// TODO: reformat naming, additional calls if body length is not sufficient, packages and unit tests.
 // TODO: transform first letter lowercase for case safety.
 func main() {
-	driver.Process()
+
+	fr := read.FileReader{}
+	fd := transform.Decoder{}
+	fw := write.FileWriter{}
+	driver.Process(&fr, &fd, &fw)
 }

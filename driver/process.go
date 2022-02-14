@@ -1,9 +1,7 @@
 package driver
 
 import (
-	"apiserv/read"
 	"apiserv/transform"
-	"apiserv/write"
 	"log"
 )
 
@@ -11,25 +9,28 @@ import (
 const url = "https://randomapi.com/api/6de6abfedb24f889e0b5f675edc50deb?fmt=raw&sole"
 
 type RecordReader interface {
+	GetBody(url string) ([]byte, error)
 }
 
 type RecordTransformer interface {
+	GetExportRecords(body []byte) ([]transform.ExportRecords, error)
 }
 
 type RecordWriter interface {
+	WriteJSON(records []transform.ExportRecords) error
 }
 
 // Process aggregates the steps that the service has to do in order to transform the data from the API call.
-func Process() {
-	body, err := read.GetBody(url)
+func Process(rr RecordReader, rt RecordTransformer, rw RecordWriter) {
+	body, err := rr.GetBody(url)
 	if err != nil {
 		log.Fatal(err)
 	}
-	exportRecords, err := transform.GetExportRecords(body)
+	exportRecords, err := rt.GetExportRecords(body)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = write.WriteJSON(exportRecords)
+	err = rw.WriteJSON(exportRecords)
 	if err != nil {
 		log.Fatal(err)
 	}

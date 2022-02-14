@@ -25,9 +25,11 @@ type ExportRecords struct {
 	TotalRecords int      `json:"total-records"`
 }
 
+type Decoder struct{}
+
 // GetExportRecords unmarshals the JSON body data that is fetched from the API call. Then it processes
 // it returning an ExportRecords object.
-func GetExportRecords(body []byte) ([]ExportRecords, error) {
+func (d *Decoder) GetExportRecords(body []byte) ([]ExportRecords, error) {
 	var records []Record
 	err := json.Unmarshal(body, &records)
 	if err != nil {

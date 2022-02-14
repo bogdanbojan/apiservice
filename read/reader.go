@@ -7,8 +7,10 @@ import (
 	"net/http"
 )
 
+type FileReader struct{}
+
 // GetBody returns the JSON, as a byte slice, which is fetched from the API call that was made to the const `url` found in driver.go.
-func GetBody(url string) ([]byte, error) {
+func (r *FileReader) GetBody(url string) ([]byte, error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("could not use GET on url: %q, err: %v", url, err)
