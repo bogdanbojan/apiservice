@@ -1,4 +1,4 @@
-package main
+package read
 
 import (
 	"encoding/json"
@@ -7,8 +7,8 @@ import (
 	"net/http"
 )
 
-// getBody returns the JSON, as a byte slice, which is fetched from the API call that was made to the const `url` found in process.go.
-func getBody(url string) ([]byte, error) {
+// GetBody returns the JSON, as a byte slice, which is fetched from the API call that was made to the const `url` found in driver.go.
+func GetBody(url string) ([]byte, error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("could not use GET on url: %q, err: %v", url, err)

@@ -1,4 +1,4 @@
-package main
+package transform
 
 import (
 	"encoding/json"
@@ -25,9 +25,9 @@ type ExportRecords struct {
 	TotalRecords int      `json:"total-records"`
 }
 
-// getExportRecords unmarshals the JSON body data that is fetched from the API call. Then it processes
+// GetExportRecords unmarshals the JSON body data that is fetched from the API call. Then it processes
 // it returning an ExportRecords object.
-func getExportRecords(body []byte) ([]ExportRecords, error) {
+func GetExportRecords(body []byte) ([]ExportRecords, error) {
 	var records []Record
 	err := json.Unmarshal(body, &records)
 	if err != nil {

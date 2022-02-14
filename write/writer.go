@@ -1,14 +1,15 @@
-package main
+package write
 
 import (
+	"apiserv/transform"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 )
 
-// writeJSON exports the records after they have been filtered, formatted and grouped into
+// WriteJSON exports the records after they have been filtered, formatted and grouped into
 // a JSON in the current user folder.
-func writeJSON(records []ExportRecords) error {
+func WriteJSON(records []transform.ExportRecords) error {
 	file, err := json.MarshalIndent(records, " ", "\t")
 	if err != nil {
 		return fmt.Errorf("cannot marshal json, error: %v", err)
