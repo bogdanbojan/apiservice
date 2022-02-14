@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"sort"
 )
 
@@ -22,15 +21,31 @@ type ExportRecords struct {
 	TotalRecords int      `json:"total-records"`
 }
 
-func formatExport(records []Record) []ExportRecords {
-	var exportRecords []ExportRecords
-	mappedExports := make(map[string][]Record)
+func decode(body []byte) ([]ExportRecords, error) {
+	var records []Record
 
-	for _, r := range records {
-		firstLetter := r.First[:1]
-		mappedExports[firstLetter] = append(mappedExports[firstLetter], r)
+	err := json.Unmarshal(body, &records)
+	if err != nil {
+		return nil, fmt.Errorf("could not unmarshal body, err: %v", err)
 	}
 
+	exportRecords := processExport(records)
+
+	return exportRecords, nil
+}
+
+func processExport(records []Record) []ExportRecords {
+	uniqueRecords := removeDuplicates(records)
+	mappedExports := mapExport(uniqueRecords)
+	formattedExports := formatExport(mappedExports)
+	sortedExports := sortRecords(formattedExports)
+
+	return sortedExports
+}
+
+// Formats the mapping into a slice that contains formatted ExportRecords types.
+func formatExport(mappedExports map[string][]Record) []ExportRecords {
+	var exportRecords []ExportRecords
 	for k, v := range mappedExports {
 		exportRecords = append(exportRecords, ExportRecords{
 			Index:        k,
@@ -38,38 +53,19 @@ func formatExport(records []Record) []ExportRecords {
 			TotalRecords: len(v),
 		})
 	}
-
-	sortRecords(exportRecords)
-
 	return exportRecords
 }
 
-func decode(body []byte) error {
-	var records []Record
+// Maps the records to the first letter of FirstName.
+func mapExport(records []Record) map[string][]Record {
+	mappedExports := make(map[string][]Record)
 
-	// unmarshal the json
-	err := json.Unmarshal(body, &records)
-	if err != nil {
-		return fmt.Errorf("could not unmarshal body, err: %v", err)
+	for _, r := range records {
+		firstLetter := r.First[:1]
+		mappedExports[firstLetter] = append(mappedExports[firstLetter], r)
 	}
 
-	// steps for record processing
-	// remove duplicates
-	uniqueRecords := removeDuplicates(records)
-
-	// sort records
-	//sortedRecords := sortRecords(uniqueRecords)
-
-	// format records
-	exportRecords := formatExport(uniqueRecords)
-
-	//marshal the json and write it
-	err = writeJSON(exportRecords)
-	if err != nil {
-		return fmt.Errorf("cannot write json, error: %v", err)
-	}
-
-	return nil
+	return mappedExports
 }
 
 // Sorts records after first name.
@@ -92,17 +88,4 @@ func removeDuplicates(records []Record) []Record {
 		}
 	}
 	return uniqueRecords
-}
-
-func writeJSON(records []ExportRecords) error {
-
-	file, err := json.MarshalIndent(records, " ", "\t")
-	if err != nil {
-		return fmt.Errorf("cannot marshal json, error: %v", err)
-	}
-	err = ioutil.WriteFile("test.json", file, 0644)
-	if err != nil {
-		return fmt.Errorf("cannot write json, error: %v", err)
-	}
-	return nil
 }

@@ -33,14 +33,3 @@ func getBody(url string) ([]byte, error) {
 
 	return body, nil
 }
-
-func readBody(body []byte) {
-	//byteReader := bytes.NewReader(body)
-
-	//byteStorage := make([]byte, 2)
-	//n, err := byteReader.ReadAt(body, 1)
-
-	fmt.Println("Storage: ", string(body))
-}
-
-// client, functia do, interfata, sa pui headere sau autentificari sau asa
