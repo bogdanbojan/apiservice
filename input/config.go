@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-type Configer struct{}
+type FileConfiger struct{}
 
 // Configuration is the current setup for the service. It includes
 // the nr of records to be read and the file path that the users wants to write to.
@@ -18,7 +18,7 @@ type Configuration struct {
 
 // RecordsConfig gets the nr of records and the file path that the user
 // inputs at the beginning of the program.
-func (c *Configer) RecordsConfig() (*Configuration, error) {
+func (fc *FileConfiger) RecordsConfig() (*Configuration, error) {
 	recordsNr, err := getRecordsNr()
 	if err != nil {
 		return nil, fmt.Errorf("error configuring records number: %v", err)

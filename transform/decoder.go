@@ -25,11 +25,11 @@ type ExportRecords struct {
 	TotalRecords int      `json:"total-records"`
 }
 
-type Decoder struct{}
+type FileDecoder struct{}
 
 // RecordsTransform unmarshals the JSON body data that is fetched from the API call. Then it processes
 // it returning an ExportRecords object.
-func (d *Decoder) RecordsTransform(body []byte) ([]ExportRecords, error) {
+func (fd *FileDecoder) RecordsTransform(body []byte) ([]ExportRecords, error) {
 	var records []Record
 	err := json.Unmarshal(body, &records)
 	if err != nil {

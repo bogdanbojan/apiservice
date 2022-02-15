@@ -11,9 +11,9 @@ import (
 // TODO: reformat naming, additional calls if body length is not sufficient, packages and unit tests.
 // TODO: transform first letter lowercase for case safety.
 func main() {
-	fc := input.Configer{}
+	fc := input.FileConfiger{}
 	fr := read.FileReader{}
-	fd := transform.Decoder{}
+	fd := transform.FileDecoder{}
 	fw := write.FileWriter{}
 	driver.Process(&fc, &fr, &fd, &fw)
 }
