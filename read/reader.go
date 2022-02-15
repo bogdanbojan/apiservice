@@ -22,6 +22,19 @@ type FileReader struct{}
 
 // RecordsRead returns the Records which are fetched from the API call that was made to the const `url` found in driver/process.go.
 func (rf *FileReader) RecordsRead(url string, recordsNr int) ([]Record, error) {
+	records, err := getRecords(url)
+	if err != nil {
+		return nil, err
+	}
+	validatedRecords, err := validateRecordsNr(records, recordsNr, url)
+	if err != nil {
+		return nil, err
+	}
+	return validatedRecords, nil
+
+}
+
+func getRecords(url string) ([]Record, error) {
 	res, err := http.Get(url)
 	if err != nil {
 		return nil, fmt.Errorf("could not use GET on url: %q, err: %v", url, err)
@@ -49,12 +62,7 @@ func (rf *FileReader) RecordsRead(url string, recordsNr int) ([]Record, error) {
 	if err != nil {
 		return nil, err
 	}
-	records, err = validateRecordsNr(records, recordsNr, url)
-	if err != nil {
-		return nil, err
-	}
 	return records, nil
-
 }
 
 func validateRecordsNr(records []Record, recordsNr int, url string) ([]Record, error) {
@@ -79,9 +87,8 @@ func unmarshalBody(body []byte) ([]Record, error) {
 }
 
 func getAdditionalRecords(records []Record, url string, recordsNr int) ([]Record, error) {
-	rf := FileReader{}
 	for len(records) < recordsNr {
-		addRecords, err := rf.RecordsRead(url, recordsNr)
+		addRecords, err := getRecords(url)
 		if err != nil {
 			return nil, err
 		}
