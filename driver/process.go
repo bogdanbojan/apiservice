@@ -2,6 +2,7 @@ package driver
 
 import (
 	"apiserv/input"
+	"apiserv/read"
 	"apiserv/transform"
 	"log"
 )
@@ -14,11 +15,11 @@ type RecordsConfiger interface {
 }
 
 type RecordsReader interface {
-	RecordsRead(url string) ([]byte, error)
+	RecordsRead(url string, recordsNr int) ([]read.Record, error)
 }
 
 type RecordsTransformer interface {
-	RecordsTransform(body []byte) ([]transform.ExportRecords, error)
+	RecordsTransform(records []read.Record) ([]transform.ExportRecords, error)
 }
 
 type RecordsWriter interface {
@@ -29,14 +30,15 @@ type RecordsWriter interface {
 func Process(rc RecordsConfiger, rr RecordsReader, rt RecordsTransformer, rw RecordsWriter) {
 	config, err := rc.RecordsConfig()
 	filePath := config.FilePath
+	recordsNr := config.NrOfRecords
 	if err != nil {
 		log.Fatal(err)
 	}
-	body, err := rr.RecordsRead(url)
+	records, err := rr.RecordsRead(url, recordsNr)
 	if err != nil {
 		log.Fatal(err)
 	}
-	exportRecords, err := rt.RecordsTransform(body)
+	exportRecords, err := rt.RecordsTransform(records)
 	if err != nil {
 		log.Fatal(err)
 	}
