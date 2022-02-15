@@ -9,11 +9,15 @@ import (
 
 type Configer struct{}
 
+// Configuration is the current setup for the service. It includes
+// the nr of records to be read and the file path that the users wants to write to.
 type Configuration struct {
 	NrOfRecords int
 	FilePath    string
 }
 
+// RecordsConfig gets the nr of records and the file path that the user
+// inputs at the beginning of the program.
 func (c *Configer) RecordsConfig() (*Configuration, error) {
 	recordsNr, err := getRecordsNr()
 	if err != nil {
@@ -27,6 +31,8 @@ func (c *Configer) RecordsConfig() (*Configuration, error) {
 	return &Configuration{NrOfRecords: recordsNr, FilePath: filePath}, nil
 }
 
+// getRecordsNr is the getter method for how many records from the API call the user
+// wants to read and process.
 func getRecordsNr() (int, error) {
 	fmt.Println("Set the nr of records you want to read: ")
 	var recordsNr int
@@ -34,6 +40,9 @@ func getRecordsNr() (int, error) {
 
 	return recordsNr, err
 }
+
+// getFilePath is the getter method for the location in which the user wants to save
+// the transformed file. It defaults to the current directory.
 func getFilePath() (string, error) {
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("(Leave empty for current dir) Set address of file: ")

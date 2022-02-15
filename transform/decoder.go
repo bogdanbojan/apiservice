@@ -7,7 +7,7 @@ import (
 )
 
 // Record is the initial structure of the JSON from the API call. It is
-// unmarshalled here from the byte array given by reader.go with the getExportRecords function.
+// unmarshalled here from the byte array given by reader.go with the RecordsTransform function.
 type Record struct {
 	FirstName string `json:"first"`
 	LastName  string `json:"last"`
@@ -27,9 +27,9 @@ type ExportRecords struct {
 
 type Decoder struct{}
 
-// GetExportRecords unmarshals the JSON body data that is fetched from the API call. Then it processes
+// RecordsTransform unmarshals the JSON body data that is fetched from the API call. Then it processes
 // it returning an ExportRecords object.
-func (d *Decoder) GetExportRecords(body []byte) ([]ExportRecords, error) {
+func (d *Decoder) RecordsTransform(body []byte) ([]ExportRecords, error) {
 	var records []Record
 	err := json.Unmarshal(body, &records)
 	if err != nil {
