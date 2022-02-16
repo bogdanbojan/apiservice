@@ -2,6 +2,7 @@ package read
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -24,11 +25,11 @@ type FileReader struct{}
 func (rf *FileReader) RecordsRead(url string, recordsNr int) ([]Record, error) {
 	records, err := getRecords(url)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not get initial records: %w", err)
 	}
 	validatedRecords, err := validateRecordsNr(records, recordsNr, url)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not get validatedRecords: %w", err)
 	}
 	return validatedRecords, nil
 
@@ -46,22 +47,21 @@ func getRecords(url string) ([]Record, error) {
 		return nil, fmt.Errorf("status code error %d \n with body %s \n", res.StatusCode, body)
 	}
 	if err != nil {
-		return nil, fmt.Errorf("could not read body, error: %v", err)
+		return nil, fmt.Errorf("could not read the body: %w", err)
 	}
 
 	err = res.Body.Close()
 	if err != nil {
-		return nil, fmt.Errorf("could not close body, error: %v", err)
+		return nil, fmt.Errorf("could not close the body: %w", err)
 	}
 
 	ok := json.Valid(body)
 	if !ok {
-		return nil, fmt.Errorf("error: JSON is not valid")
+		return nil, errors.New("error: JSON is not valid")
 	}
-	// TODO: Improve errors
 	records, err := unmarshalBody(body)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("could not unmarshal the body: %w", err)
 	}
 	return records, nil
 }
@@ -72,7 +72,7 @@ func validateRecordsNr(records []Record, recordsNr int, url string) ([]Record, e
 	if isValid(len(records), recordsNr) {
 		additionalRecords, err := getAdditionalRecords(records, url, recordsNr)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("coult not get additional records: %w", err)
 		}
 		return additionalRecords, nil
 	} else {
@@ -95,7 +95,7 @@ func getAdditionalRecords(records []Record, url string, recordsNr int) ([]Record
 	for len(records) < recordsNr {
 		addRecords, err := getRecords(url)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("could not get addRecords: %w", err)
 		}
 		records = addAdditionalRecords(records, addRecords, recordsNr)
 	}
