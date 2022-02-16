@@ -9,6 +9,11 @@ import (
 
 type FileConfiger struct{}
 
+// NewFileConfiger constructs a new FileConfiger instance.
+func NewFileConfiger() *FileConfiger {
+	return &FileConfiger{}
+}
+
 // Configuration is the current setup for the service. It includes
 // the nr of records to be read and the file path that the users wants to write to.
 type Configuration struct {

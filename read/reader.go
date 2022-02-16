@@ -21,6 +21,11 @@ type Record struct {
 
 type FileReader struct{}
 
+// NewFileReader constructs a new FileReader instance.
+func NewFileReader() *FileReader {
+	return &FileReader{}
+}
+
 // RecordsRead returns the Records which are fetched from the API call that was made to the const `url` found in driver/process.go.
 func (rf *FileReader) RecordsRead(url string, recordsNr int) ([]Record, error) {
 	records, err := getRecords(url)
@@ -85,7 +90,7 @@ func unmarshalBody(body []byte) ([]Record, error) {
 	var records []Record
 	err := json.Unmarshal(body, &records)
 	if err != nil {
-		return nil, fmt.Errorf("could not unmarshal body, err: %v", err)
+		return nil, fmt.Errorf("could not unmarshal body: %w", err)
 	}
 	return records, nil
 }

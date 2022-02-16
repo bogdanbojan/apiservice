@@ -16,6 +16,11 @@ type ExportRecords struct {
 
 type FileDecoder struct{}
 
+// NewFileDecoder constructs a new FileDecoder instance.
+func NewFileDecoder() *FileDecoder {
+	return &FileDecoder{}
+}
+
 // RecordsTransform unmarshals the JSON body data that is fetched from the API call. Then it processes
 // it returning an ExportRecords object.
 func (fd *FileDecoder) RecordsTransform(records []read.Record) ([]ExportRecords, error) {

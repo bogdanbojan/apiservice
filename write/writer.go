@@ -9,6 +9,11 @@ import (
 
 type FileWriter struct{}
 
+// NewFileWriter constructs a new FileWriter instance.
+func NewFileWriter() *FileWriter {
+	return &FileWriter{}
+}
+
 // RecordsWrite exports the records after they have been filtered, formatted and grouped into
 // a JSON in the current user folder.
 func (fw *FileWriter) RecordsWrite(records []transform.ExportRecords, filePath string) error {

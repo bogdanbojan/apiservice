@@ -11,11 +11,11 @@ import (
 // TODO: reformat naming and introduce unit tests.
 // TODO: transform first letter lowercase for case safety.
 func main() {
-	fc := input.FileConfiger{}
-	fr := read.FileReader{}
-	fd := transform.FileDecoder{}
-	fw := write.FileWriter{}
-	driver.Process(&fc, &fr, &fd, &fw)
+	fc := input.NewFileConfiger()
+	fr := read.NewFileReader()
+	fd := transform.NewFileDecoder()
+	fw := write.NewFileWriter()
+	driver.Process(fc, fr, fd, fw)
 }
 
 // TODO:
