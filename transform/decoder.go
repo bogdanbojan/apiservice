@@ -64,7 +64,6 @@ func mapExport(records []read.Record) map[string][]read.Record {
 		firstLetter := r.FirstName[:1]
 		mappedExports[firstLetter] = append(mappedExports[firstLetter], r)
 	}
-
 	return mappedExports
 }
 

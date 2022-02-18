@@ -7,31 +7,127 @@ import (
 )
 
 func TestProcessExport(t *testing.T) {}
-func TestMapExport(t *testing.T)     {}
-func TestFormatExport(t *testing.T)  {}
 
 //func TestSortRecords(t *testing.T) {
 //	for _, dc := range sortCases {
 //		t.Run(dc.name, func(t *testing.T) {
 //			got := sortRecords(dc.records)
 //			want := dc.want
-//			assertEqual(t, got, want)
+//			assertDuplicate(t, got, want)
 //		})
 //	}
 //}
+
+func TestFormatExport(t *testing.T) {
+	for _, fc := range formatCases {
+		t.Run(fc.name, func(t *testing.T) {
+			got := formatExport(fc.mappedExports)
+			want := fc.want
+			assertFormatting(t, got, want)
+		})
+	}
+
+}
+
+func assertFormatting(t testing.TB, got, want []ExportRecords) {
+	t.Helper()
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+var formatCases = []struct {
+	name          string
+	mappedExports map[string][]read.Record
+	want          []ExportRecords
+}{
+	{
+		name: "multiple entries",
+		mappedExports: map[string][]read.Record{
+			"J": {{FirstName: "Justice"}},
+			"S": {{FirstName: "Sabrina"}},
+			"T": {{FirstName: "Thad"}, {FirstName: "Tyson"}},
+		},
+	},
+}
+
+func TestMapExport(t *testing.T) {
+	for _, mc := range mapCases {
+		t.Run(mc.name, func(t *testing.T) {
+			got := mapExport(mc.records)
+			want := mc.want
+			assertMapping(t, got, want)
+		})
+	}
+}
+
+func assertMapping(t testing.TB, got, want map[string][]read.Record) {
+	t.Helper()
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+var mapCases = []struct {
+	name    string
+	records []read.Record
+	want    map[string][]read.Record
+}{
+	{
+		name: "multiple entries",
+		records: []read.Record{
+			{
+				FirstName: "Thad",
+			},
+			{
+				FirstName: "Tyson",
+			},
+			{
+				FirstName: "Justice",
+			},
+			{
+				FirstName: "Sabrina",
+			},
+		},
+		want: map[string][]read.Record{
+			"J": {{FirstName: "Justice"}},
+			"S": {{FirstName: "Sabrina"}},
+			"T": {{FirstName: "Thad"}, {FirstName: "Tyson"}},
+		},
+	}, {
+		name: "all entries with the same letter",
+		records: []read.Record{
+			{
+				FirstName: "Thad",
+			},
+			{
+				FirstName: "Tyson",
+			},
+			{
+				FirstName: "Thames",
+			},
+			{
+				FirstName: "Thar",
+			},
+		},
+		want: map[string][]read.Record{
+			"T": {{FirstName: "Thad"}, {FirstName: "Tyson"}, {FirstName: "Thames"}, {FirstName: "Thar"}},
+		},
+	},
+}
 
 func TestRemoveDuplicates(t *testing.T) {
 	for _, dc := range duplicatesCases {
 		t.Run(dc.name, func(t *testing.T) {
 			got := removeDuplicates(dc.records)
 			want := dc.want
-			assertEqual(t, got, want)
+			assertDuplicate(t, got, want)
 		})
 	}
 
 }
 
-func assertEqual(t testing.TB, got, want []read.Record) {
+func assertDuplicate(t testing.TB, got, want []read.Record) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %q, want %q", got, want)
