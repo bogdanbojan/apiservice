@@ -23,9 +23,9 @@ type Configuration struct {
 	FilePath    string
 }
 
-// RecordsConfig gets the nr of records and the file path that the user
+// ConfigRecords gets the nr of records and the file path that the user
 // inputs at the beginning of the program.
-func (fc *FileConfiger) RecordsConfig() (*FileConfiger, error) {
+func (fc *FileConfiger) ConfigRecords() (*FileConfiger, error) {
 	recordsNr, err := getRecordsNr()
 	if err != nil {
 		return nil, fmt.Errorf("error configuring records number: %v", err)

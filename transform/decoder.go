@@ -21,9 +21,9 @@ func NewFileDecoder() *FileDecoder {
 	return &FileDecoder{}
 }
 
-// RecordsTransform unmarshals the JSON body data that is fetched from the API call. Then it processes
+// TransformRecords unmarshals the JSON body data that is fetched from the API call. Then it processes
 // it returning an ExportRecords object.
-func (fd *FileDecoder) RecordsTransform(records []read.Record) ([]ExportRecords, error) {
+func (fd *FileDecoder) TransformRecords(records []read.Record) ([]ExportRecords, error) {
 
 	fmt.Println("Nr of records: ", len(records))
 

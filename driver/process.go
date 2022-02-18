@@ -12,38 +12,38 @@ import (
 const url = "https://randomapi.com/api/6de6abfedb24f889e0b5f675edc50deb?fmt=raw&sole"
 
 type RecordsConfiger interface {
-	RecordsConfig() (*input.FileConfiger, error)
+	ConfigRecords() (*input.FileConfiger, error)
 }
 
 type RecordsReader interface {
-	RecordsRead(ctx context.Context, url string, recordsNr int) ([]read.Record, error)
+	ReadRecords(ctx context.Context, url string, recordsNr int) ([]read.Record, error)
 }
 
 type RecordsTransformer interface {
-	RecordsTransform(records []read.Record) ([]transform.ExportRecords, error)
+	TransformRecords(records []read.Record) ([]transform.ExportRecords, error)
 }
 
 type RecordsWriter interface {
-	RecordsWrite(records []transform.ExportRecords, filePath string) error
+	WriteRecords(records []transform.ExportRecords, filePath string) error
 }
 
 // Process aggregates the steps that the service has to do in order to transform the data from the API call.
 func Process(ctx context.Context, rc RecordsConfiger, rr RecordsReader, rt RecordsTransformer, rw RecordsWriter) {
-	config, err := rc.RecordsConfig()
+	config, err := rc.ConfigRecords()
 	filePath := config.FilePath
 	recordsNr := config.NrOfRecords
 	if err != nil {
 		log.Fatal(err)
 	}
-	records, err := rr.RecordsRead(ctx, url, recordsNr)
+	records, err := rr.ReadRecords(ctx, url, recordsNr)
 	if err != nil {
 		log.Fatal(err)
 	}
-	exportRecords, err := rt.RecordsTransform(records)
+	exportRecords, err := rt.TransformRecords(records)
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = rw.RecordsWrite(exportRecords, filePath)
+	err = rw.WriteRecords(exportRecords, filePath)
 	if err != nil {
 		log.Fatal(err)
 	}

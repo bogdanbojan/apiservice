@@ -10,7 +10,7 @@ import (
 )
 
 // Record is the initial structure of the JSON from the API call. It is
-// unmarshalled here from the byte array given by reader.go with the RecordsTransform function.
+// unmarshalled here from the byte array given by reader.go with the TransformRecords function.
 type Record struct {
 	FirstName string `json:"first"`
 	LastName  string `json:"last"`
@@ -27,8 +27,8 @@ func NewFileReader() *FileReader {
 	return &FileReader{}
 }
 
-// RecordsRead returns the Records which are fetched from the API call that was made to the const `url` found in driver/process.go.
-func (rf *FileReader) RecordsRead(ctx context.Context, url string, recordsNr int) ([]Record, error) {
+// ReadRecords returns the Records which are fetched from the API call that was made to the const `url` found in driver/process.go.
+func (fr *FileReader) ReadRecords(ctx context.Context, url string, recordsNr int) ([]Record, error) {
 	records, err := getRecords(ctx, url)
 	if err != nil {
 		return nil, fmt.Errorf("could not get initial records: %w", err)
