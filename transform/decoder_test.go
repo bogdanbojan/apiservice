@@ -9,18 +9,130 @@ import (
 // TODO: assert errors in the rest of the tests.
 // TODO: group assertEqual under an interface that holds the types of data structures used in the transform step
 // TODO: minimize duplicate structs used for tests. DRY.
+// TODO: change assertSorting to assertExportRec? because assertDuplicates and assertSorting use the same data structure.
 
-func TestProcessExport(t *testing.T) {}
+func TestProcessExport(t *testing.T) {
+	for _, pc := range processCases {
+		t.Run(pc.name, func(t *testing.T) {
+			got := processExport(pc.records)
+			want := pc.want
+			assertProcess(t, got, want)
+		})
+	}
 
-//func TestSortRecords(t *testing.T) {
-//	for _, dc := range sortCases {
-//		t.Run(dc.name, func(t *testing.T) {
-//			got := sortRecords(dc.records)
-//			want := dc.want
-//			assertDuplicate(t, got, want)
-//		})
-//	}
-//}
+}
+func assertProcess(t testing.TB, got, want []ExportRecords) {
+	t.Helper()
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+var processCases = []struct {
+	name    string
+	records []read.Record
+	want    []ExportRecords
+}{
+	{
+		name: "multiple entries",
+		records: []read.Record{
+			{
+				FirstName: "Thad",
+			},
+			{
+				FirstName: "Thad",
+			},
+			{
+				FirstName: "Tyson",
+			},
+			{
+				FirstName: "Justice",
+			},
+			{
+				FirstName: "Sabrina",
+			},
+		},
+		want: []ExportRecords{
+			{
+				"J",
+				[]read.Record{{FirstName: "Justice"}},
+				1,
+			},
+			{
+				"S",
+				[]read.Record{{FirstName: "Sabrina"}},
+				1,
+			},
+			{
+				"T",
+				[]read.Record{{FirstName: "Thad"}, {FirstName: "Tyson"}},
+				2,
+			},
+		},
+	},
+}
+
+func TestSortRecords(t *testing.T) {
+	for _, sc := range sortCases {
+		t.Run(sc.name, func(t *testing.T) {
+			got := sortRecords(sc.records)
+			want := sc.want
+			assertSorting(t, got, want)
+		})
+	}
+}
+
+func assertSorting(t testing.TB, got, want []ExportRecords) {
+	t.Helper()
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("got %q, want %q", got, want)
+	}
+}
+
+var sortCases = []struct {
+	name    string
+	records []ExportRecords
+	want    []ExportRecords
+}{
+	{
+		name: "multiple entries",
+		records: []ExportRecords{
+			{
+				"J",
+				[]read.Record{{FirstName: "Justice"}},
+				1,
+			},
+			{
+				"S",
+				[]read.Record{{FirstName: "Sabrina"}},
+				1,
+			},
+			{
+				"A",
+				[]read.Record{{FirstName: "Abraham"}, {FirstName: "Ashley"}},
+				2,
+			},
+		},
+		want: []ExportRecords{
+			{
+				"A",
+				[]read.Record{{FirstName: "Abraham"}, {FirstName: "Ashley"}},
+				2,
+			},
+			{
+				"J",
+				[]read.Record{{FirstName: "Justice"}},
+				1,
+			},
+			{
+				"S",
+				[]read.Record{{FirstName: "Sabrina"}},
+				1,
+			},
+		},
+	},
+}
+
 func TestFormatExport(t *testing.T) {
 	for _, fc := range formatCases {
 		t.Run(fc.name, func(t *testing.T) {
@@ -152,67 +264,6 @@ func assertDuplicate(t testing.TB, got, want []read.Record) {
 		t.Errorf("got %q, want %q", got, want)
 	}
 }
-
-//var sortCases = []struct {
-//	name    string
-//	records []read.Record
-//	want    []read.Record
-//}{
-//	{
-//		name: "out of order records",
-//		records: []read.Record{
-//			{
-//				FirstName: "Thad",
-//				LastName:  "Feest",
-//				Email:     "Thad.Feest@cleve.name",
-//				Address:   "77881 Schaefer Loaf",
-//				Created:   "July 13, 2021",
-//				Balance:   "$1,950.71",
-//			},
-//			{
-//				FirstName: "Sabrina",
-//				LastName:  "Kuphal",
-//				Email:     "whiterabbit70@gmail.com",
-//				Address:   "03491 Howard Vista",
-//				Created:   "August 29, 2018",
-//				Balance:   "$6,996.45",
-//			},
-//			{
-//				FirstName: "Justice",
-//				LastName:  "Keebler",
-//				Email:     "magentarabbit07@gmail.com",
-//				Address:   "173 Hyatt Crossroad",
-//				Created:   "April 12, 2014",
-//				Balance:   "$1,359.61"},
-//		},
-//		want: []read.Record{
-//			{
-//				FirstName: "Justice",
-//				LastName:  "Keebler",
-//				Email:     "magentarabbit07@gmail.com",
-//				Address:   "173 Hyatt Crossroad",
-//				Created:   "April 12, 2014",
-//				Balance:   "$1,359.61",
-//			},
-//			{
-//				FirstName: "Sabrina",
-//				LastName:  "Kuphal",
-//				Email:     "whiterabbit70@gmail.com",
-//				Address:   "03491 Howard Vista",
-//				Created:   "August 29, 2018",
-//				Balance:   "$6,996.45",
-//			},
-//			{
-//				FirstName: "Thad",
-//				LastName:  "Feest",
-//				Email:     "Thad.Feest@cleve.name",
-//				Address:   "77881 Schaefer Loaf",
-//				Created:   "July 13, 2021",
-//				Balance:   "$1,950.71",
-//			},
-//		},
-//	},
-//}
 
 var duplicatesCases = []struct {
 	name    string
