@@ -1,6 +1,7 @@
 package read
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -27,8 +28,8 @@ func NewFileReader() *FileReader {
 }
 
 // RecordsRead returns the Records which are fetched from the API call that was made to the const `url` found in driver/process.go.
-func (rf *FileReader) RecordsRead(url string, recordsNr int) ([]Record, error) {
-	records, err := getRecords(url)
+func (rf *FileReader) RecordsRead(ctx context.Context, url string, recordsNr int) ([]Record, error) {
+	records, err := getRecords(ctx, url)
 	if err != nil {
 		return nil, fmt.Errorf("could not get initial records: %w", err)
 	}
@@ -41,16 +42,21 @@ func (rf *FileReader) RecordsRead(url string, recordsNr int) ([]Record, error) {
 }
 
 // getRecords takes the url string and unmarshals the API response into an array of Record type with the unmarshalBody helper function.
-func getRecords(url string) ([]Record, error) {
-	res, err := http.Get(url)
+func getRecords(ctx context.Context, url string) ([]Record, error) {
+	client := &http.Client{}
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
 	if err != nil {
-		return nil, fmt.Errorf("could not use GET on url: %q, err: %v", url, err)
+		return nil, fmt.Errorf("could not use GET on url: %q, err: %w", url, err)
+	}
+	res, err := client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("could not establish proper HTTP connection: %w", err)
+	}
+	if res.StatusCode > 299 {
+		return nil, fmt.Errorf("status code error %d \n with body %s \n", res.StatusCode, res)
 	}
 
 	body, err := io.ReadAll(res.Body)
-	if res.StatusCode > 299 {
-		return nil, fmt.Errorf("status code error %d \n with body %s \n", res.StatusCode, body)
-	}
 	if err != nil {
 		return nil, fmt.Errorf("could not read the body: %w", err)
 	}
@@ -64,6 +70,7 @@ func getRecords(url string) ([]Record, error) {
 	if !ok {
 		return nil, errors.New("error: JSON is not valid")
 	}
+
 	records, err := unmarshalBody(body)
 	if err != nil {
 		return nil, fmt.Errorf("could not unmarshal the body: %w", err)
@@ -98,7 +105,8 @@ func unmarshalBody(body []byte) ([]Record, error) {
 // getAdditionalRecords is a helper function that loops until it gets the records bounded by the number set by the user.
 func getAdditionalRecords(records []Record, url string, recordsNr int) ([]Record, error) {
 	for len(records) < recordsNr {
-		addRecords, err := getRecords(url)
+		ctx := context.Background()
+		addRecords, err := getRecords(ctx, url)
 		if err != nil {
 			return nil, fmt.Errorf("could not get addRecords: %w", err)
 		}

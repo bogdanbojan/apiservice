@@ -4,6 +4,7 @@ import (
 	"apiserv/input"
 	"apiserv/read"
 	"apiserv/transform"
+	"context"
 	"log"
 )
 
@@ -15,7 +16,7 @@ type RecordsConfiger interface {
 }
 
 type RecordsReader interface {
-	RecordsRead(url string, recordsNr int) ([]read.Record, error)
+	RecordsRead(ctx context.Context, url string, recordsNr int) ([]read.Record, error)
 }
 
 type RecordsTransformer interface {
@@ -27,14 +28,14 @@ type RecordsWriter interface {
 }
 
 // Process aggregates the steps that the service has to do in order to transform the data from the API call.
-func Process(rc RecordsConfiger, rr RecordsReader, rt RecordsTransformer, rw RecordsWriter) {
+func Process(ctx context.Context, rc RecordsConfiger, rr RecordsReader, rt RecordsTransformer, rw RecordsWriter) {
 	config, err := rc.RecordsConfig()
 	filePath := config.FilePath
 	recordsNr := config.NrOfRecords
 	if err != nil {
 		log.Fatal(err)
 	}
-	records, err := rr.RecordsRead(url, recordsNr)
+	records, err := rr.RecordsRead(ctx, url, recordsNr)
 	if err != nil {
 		log.Fatal(err)
 	}

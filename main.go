@@ -6,16 +6,18 @@ import (
 	"apiserv/read"
 	"apiserv/transform"
 	"apiserv/write"
+	"context"
 )
 
 // TODO: reformat naming and introduce unit tests.
 // TODO: transform first letter lowercase for case safety.
 func main() {
+	ctx := context.Background()
 	fc := input.NewFileConfiger()
 	fr := read.NewFileReader()
 	fd := transform.NewFileDecoder()
 	fw := write.NewFileWriter()
-	driver.Process(fc, fr, fd, fw)
+	driver.Process(ctx, fc, fr, fd, fw)
 }
 
 // TODO:
