@@ -28,11 +28,11 @@ type Configuration struct {
 func (fc *FileConfiger) ConfigRecords() (*FileConfiger, error) {
 	recordsNr, err := getRecordsNr()
 	if err != nil {
-		return nil, fmt.Errorf("error configuring records number: %v", err)
+		return nil, fmt.Errorf("error configuring records number: %w", err)
 	}
 	filePath, err := getFilePath()
 	if err != nil {
-		return nil, fmt.Errorf("error configuring file path: %v", err)
+		return nil, fmt.Errorf("error configuring file path: %w", err)
 	}
 
 	return &FileConfiger{Configuration{NrOfRecords: recordsNr, FilePath: filePath}}, nil

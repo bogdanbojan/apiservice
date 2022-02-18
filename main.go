@@ -9,8 +9,8 @@ import (
 	"context"
 )
 
-// TODO: reformat naming and introduce unit tests.
-// TODO: transform first letter lowercase for case safety.
+// TODO: unit tests for each step.
+// TODO: package names write, read, decoder problematic- too general already used in the standard library?
 func main() {
 	ctx := context.Background()
 	fc := input.NewFileConfiger()
@@ -19,8 +19,3 @@ func main() {
 	fw := write.NewFileWriter()
 	driver.Process(ctx, fc, fr, fd, fw)
 }
-
-// TODO:
-// package names write, read problematic- too general already used in the standard libraary?
-// interface methods not similar to interface name
-// decoder is already in standard go library

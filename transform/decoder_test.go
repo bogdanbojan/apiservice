@@ -6,6 +6,10 @@ import (
 	"testing"
 )
 
+// TODO: assert errors in the rest of the tests.
+// TODO: group assertEqual under an interface that holds the types of data structures used in the transform step
+// TODO: minimize duplicate structs used for tests. DRY.
+
 func TestProcessExport(t *testing.T) {}
 
 //func TestSortRecords(t *testing.T) {
@@ -17,7 +21,6 @@ func TestProcessExport(t *testing.T) {}
 //		})
 //	}
 //}
-
 func TestFormatExport(t *testing.T) {
 	for _, fc := range formatCases {
 		t.Run(fc.name, func(t *testing.T) {
@@ -26,7 +29,6 @@ func TestFormatExport(t *testing.T) {
 			assertFormatting(t, got, want)
 		})
 	}
-
 }
 
 func assertFormatting(t testing.TB, got, want []ExportRecords) {
@@ -47,6 +49,23 @@ var formatCases = []struct {
 			"J": {{FirstName: "Justice"}},
 			"S": {{FirstName: "Sabrina"}},
 			"T": {{FirstName: "Thad"}, {FirstName: "Tyson"}},
+		},
+		want: []ExportRecords{
+			{
+				"J",
+				[]read.Record{{FirstName: "Justice"}},
+				1,
+			},
+			{
+				"S",
+				[]read.Record{{FirstName: "Sabrina"}},
+				1,
+			},
+			{
+				"T",
+				[]read.Record{{FirstName: "Thad"}, {FirstName: "Tyson"}},
+				2,
+			},
 		},
 	},
 }
@@ -134,13 +153,6 @@ func assertDuplicate(t testing.TB, got, want []read.Record) {
 	}
 }
 
-var ExportCases = []struct {
-	name    string
-	records []read.Record
-	want    map[string][]read.Record
-}{}
-
-//
 //var sortCases = []struct {
 //	name    string
 //	records []read.Record

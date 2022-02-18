@@ -19,11 +19,11 @@ func NewFileWriter() *FileWriter {
 func (fw *FileWriter) WriteRecords(records []transform.ExportRecords, filePath string) error {
 	file, err := json.MarshalIndent(records, " ", "\t")
 	if err != nil {
-		return fmt.Errorf("cannot marshal json, error: %v", err)
+		return fmt.Errorf("cannot marshal json: %w", err)
 	}
 	err = ioutil.WriteFile(filePath, file, 0644)
 	if err != nil {
-		return fmt.Errorf("cannot write json, error: %v", err)
+		return fmt.Errorf("cannot write json: %w", err)
 	}
 	return nil
 }

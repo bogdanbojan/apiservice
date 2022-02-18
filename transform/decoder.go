@@ -53,6 +53,7 @@ func formatExport(mappedExports map[string][]read.Record) []ExportRecords {
 			TotalRecords: len(v),
 		})
 	}
+	fmt.Println(exportRecords)
 	return exportRecords
 }
 
