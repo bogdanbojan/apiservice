@@ -361,3 +361,20 @@ var duplicatesCases = []struct {
 		},
 	},
 }
+
+//type TestAsserter interface {
+//	assertEqual(t testing.TB)
+//}
+//
+//type Asserter struct {
+//	name string
+//	got  []ExportRecords
+//	want []ExportRecords
+//}
+//
+//func (a *Asserter) assertEqual(t testing.TB) {
+//	t.Helper()
+//	if !reflect.DeepEqual(a.got, a.want) {
+//		t.Errorf("got %q, want %q", a.got, a.want)
+//	}
+//}

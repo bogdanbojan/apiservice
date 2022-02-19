@@ -9,6 +9,7 @@ import (
 )
 
 // TODO: maybe don't completely shut down app using log.Fatal..
+// TODO: move url global var to an .env/.yaml/.toml file. External package needed..
 const url = "https://randomapi.com/api/6de6abfedb24f889e0b5f675edc50deb?fmt=raw&sole"
 
 type RecordsConfiger interface {
