@@ -53,7 +53,7 @@ func getRecords(ctx context.Context, url string) ([]Record, error) {
 		return nil, fmt.Errorf("could not establish proper HTTP connection: %w", err)
 	}
 	if res.StatusCode > 299 {
-		return nil, fmt.Errorf("status code error %d \n with body %s \n", res.StatusCode, res)
+		return nil, fmt.Errorf("status code error %d \n", res.StatusCode)
 	}
 
 	body, err := io.ReadAll(res.Body)
