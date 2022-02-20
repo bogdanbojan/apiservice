@@ -84,7 +84,7 @@ func validateRecordsNr(records []Record, recordsNr int, url string) ([]Record, e
 	if isValid(len(records), recordsNr) {
 		additionalRecords, err := getAdditionalRecords(records, url, recordsNr)
 		if err != nil {
-			return nil, fmt.Errorf("coult not get additional records: %w", err)
+			return nil, fmt.Errorf("could not get additional records: %w", err)
 		}
 		return additionalRecords, nil
 	} else {
