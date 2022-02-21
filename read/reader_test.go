@@ -56,13 +56,13 @@ func TestAddAdditionalRecords(t *testing.T) {
 func TestGetAdditionalRecords(t *testing.T) {
 	records := recordsCases[0].records
 	t.Run("nr of records is enough", func(t *testing.T) {
-		got, _ := getAdditionalRecords(records, "", 3)
+		got, _ := getAdditionalRecords(records, 3)
 		want := records
 		assertEqual(t, got, want)
 
 	})
 	t.Run("need to fetch additional records", func(t *testing.T) {
-		_, err := getAdditionalRecords(records, "", 10)
+		_, err := getAdditionalRecords(records, 10)
 		if err == nil {
 			t.Errorf("expected an error")
 		}
@@ -72,14 +72,14 @@ func TestGetAdditionalRecords(t *testing.T) {
 func TestValidateRecords(t *testing.T) {
 	records := recordsCases[0].records
 	t.Run("nr of records is less than the desired user set nr", func(t *testing.T) {
-		_, err := validateRecordsNr(records, 4, "")
+		_, err := validateRecordsNr(records, 4)
 		// TODO: Should i have a custom error so I can test it against assertError?
 		if err == nil {
 			t.Errorf("expected an error")
 		}
 	})
 	t.Run("nr of records is the same as the desired user set nr", func(t *testing.T) {
-		got, _ := validateRecordsNr(records, 3, "")
+		got, _ := validateRecordsNr(records, 3)
 		want := []Record{
 			{
 				FirstName: "Thad",
@@ -109,7 +109,7 @@ func TestValidateRecords(t *testing.T) {
 
 	})
 	t.Run("nr of records is bigger than the desired user set nr", func(t *testing.T) {
-		got, _ := validateRecordsNr(records, 2, "")
+		got, _ := validateRecordsNr(records, 2)
 		want := []Record{
 			{
 				FirstName: "Thad",

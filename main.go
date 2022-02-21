@@ -9,7 +9,6 @@ import (
 	"context"
 )
 
-// TODO: unit tests for each step.
 // TODO: package names write, read, decoder problematic- too general already used in the standard library?
 func main() {
 	ctx := context.Background()

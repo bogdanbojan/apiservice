@@ -9,15 +9,13 @@ import (
 )
 
 // TODO: maybe don't completely shut down app using log.Fatal..
-// TODO: move url global var to an .env/.yaml/.toml file. External package needed..
-const url = "https://randomapi.com/api/6de6abfedb24f889e0b5f675edc50deb?fmt=raw&sole"
 
 type RecordsConfiger interface {
 	ConfigRecords() (*input.FileConfiger, error)
 }
 
 type RecordsReader interface {
-	ReadRecords(ctx context.Context, url string, recordsNr int) ([]read.Record, error)
+	ReadRecords(ctx context.Context, recordsNr int) ([]read.Record, error)
 }
 
 type RecordsTransformer interface {
@@ -36,7 +34,7 @@ func Process(ctx context.Context, rc RecordsConfiger, rr RecordsReader, rt Recor
 	if err != nil {
 		log.Fatal(err)
 	}
-	records, err := rr.ReadRecords(ctx, url, recordsNr)
+	records, err := rr.ReadRecords(ctx, recordsNr)
 	if err != nil {
 		log.Fatal(err)
 	}
