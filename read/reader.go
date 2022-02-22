@@ -144,7 +144,6 @@ func isValid(recordsLen int, recordsNr int) bool {
 	return recordsLen < recordsNr
 }
 
-// TODO: additional checks?
 // getEnvURL fetches the URL from the .env file.
 func getEnvURL() (string, error) {
 	key := "SOURCE_URL"

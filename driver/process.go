@@ -8,8 +8,6 @@ import (
 	"log"
 )
 
-// TODO: maybe don't completely shut down app using log.Fatal..
-
 type RecordsConfiger interface {
 	ConfigRecords() (*input.FileConfiger, error)
 }

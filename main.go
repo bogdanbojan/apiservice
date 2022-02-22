@@ -9,7 +9,6 @@ import (
 	"context"
 )
 
-// TODO: package names write, read, decoder problematic- too general already used in the standard library?
 func main() {
 	ctx := context.Background()
 	fc := input.NewFileConfiger()

@@ -6,11 +6,6 @@ import (
 	"testing"
 )
 
-// TODO: assert errors in the rest of the tests.
-// TODO: group assertEqual under an interface that holds the types of data structures used in the transform step
-// TODO: minimize duplicate structs used for tests. DRY.
-// TODO: change assertSorting to assertExportRec? because assertDuplicates and assertSorting use the same data structure.
-
 func TestProcessExport(t *testing.T) {
 	for _, pc := range processCases {
 		t.Run(pc.name, func(t *testing.T) {
