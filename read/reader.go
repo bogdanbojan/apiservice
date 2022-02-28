@@ -11,6 +11,8 @@ import (
 	"strings"
 )
 
+// TODO: Make cfg outside packages and import them afterwards into reader.
+
 //go:embed apiservice.env
 var envURL embed.FS
 

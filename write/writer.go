@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 )
 
+// TODO: WriteRecords should do one thing.
+
 type FileWriter struct{}
 
 // NewFileWriter constructs a new FileWriter instance.
