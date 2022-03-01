@@ -7,6 +7,7 @@ import (
 	"apiserv/transform"
 	"apiserv/write"
 	"context"
+	"log"
 )
 
 func main() {
@@ -15,5 +16,8 @@ func main() {
 	fr := read.NewFileReader()
 	fd := transform.NewFileDecoder()
 	fw := write.NewFileWriter()
-	driver.Process(ctx, fc, fr, fd, fw)
+	err := driver.Process(ctx, fc, fr, fd, fw)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
