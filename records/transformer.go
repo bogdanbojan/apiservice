@@ -1,17 +1,18 @@
-package transform
+package records
 
 import (
-	"apiserv/read"
 	"fmt"
 	"sort"
 )
 
+// TODO: change FileDecoder -> Transformer
+
 // ExportRecords holds the JSON structure for the exported data. It groups the records obtained by the API
 // with an Index (first letter of the FirstName) and holds all the records that satisfy that condition in Records.
 type ExportRecords struct {
-	Index        string        `json:"index"`
-	Records      []read.Record `json:"records"`
-	TotalRecords int           `json:"total-records"`
+	Index        string   `json:"index"`
+	Records      []Record `json:"records"`
+	TotalRecords int      `json:"total-records"`
 }
 
 type FileDecoder struct{}
@@ -23,7 +24,7 @@ func NewFileDecoder() *FileDecoder {
 
 // TransformRecords unmarshals the JSON body data that is fetched from the API call. Then it processes
 // it returning an ExportRecords object.
-func (fd *FileDecoder) TransformRecords(records []read.Record) ([]ExportRecords, error) {
+func (fd *FileDecoder) TransformRecords(records []Record) ([]ExportRecords, error) {
 	fmt.Println("Nr of records: ", len(records))
 	exportRecords := processExport(records)
 
@@ -32,7 +33,7 @@ func (fd *FileDecoder) TransformRecords(records []read.Record) ([]ExportRecords,
 
 // processExport transforms the data, filtering out duplicates, groups them, and then
 // formats the records and, at last, sorts them.
-func processExport(records []read.Record) []ExportRecords {
+func processExport(records []Record) []ExportRecords {
 	uniqueRecords := removeDuplicates(records)
 	mappedExports := mapExport(uniqueRecords)
 	formattedExports := formatExport(mappedExports)
@@ -42,7 +43,7 @@ func processExport(records []read.Record) []ExportRecords {
 }
 
 // Formats the mapping into a slice that contains formatted ExportRecords types.
-func formatExport(mappedExports map[string][]read.Record) []ExportRecords {
+func formatExport(mappedExports map[string][]Record) []ExportRecords {
 	var exportRecords []ExportRecords
 	for k, v := range mappedExports {
 		exportRecords = append(exportRecords, ExportRecords{
@@ -55,8 +56,8 @@ func formatExport(mappedExports map[string][]read.Record) []ExportRecords {
 }
 
 // Maps the records to the first letter of FirstName.
-func mapExport(records []read.Record) map[string][]read.Record {
-	mappedExports := make(map[string][]read.Record)
+func mapExport(records []Record) map[string][]Record {
+	mappedExports := make(map[string][]records.Record)
 
 	for _, r := range records {
 		firstLetter := r.FirstName[:1]
@@ -75,9 +76,9 @@ func sortRecords(records []ExportRecords) []ExportRecords {
 }
 
 // removeDuplicates gets rid of any duplicate entries from the provided records that come from the API call.
-func removeDuplicates(records []read.Record) []read.Record {
-	var uniqueRecords []read.Record // filter wo allocation
-	recordMap := make(map[read.Record]struct{})
+func removeDuplicates(records []Record) []Record {
+	var uniqueRecords []records.Record // filter wo allocation
+	recordMap := make(map[records.Record]struct{})
 
 	for _, record := range records {
 		if _, ok := recordMap[record]; !ok {

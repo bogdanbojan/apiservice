@@ -1,7 +1,6 @@
-package transform
+package records
 
 import (
-	"apiserv/read"
 	"reflect"
 	"testing"
 )
@@ -25,12 +24,12 @@ func assertProcess(t testing.TB, got, want []ExportRecords) {
 
 var processCases = []struct {
 	name    string
-	records []read.Record
+	records []Record
 	want    []ExportRecords
 }{
 	{
 		name: "multiple entries",
-		records: []read.Record{
+		records: []Record{
 			{
 				FirstName: "Thad",
 			},
@@ -50,17 +49,17 @@ var processCases = []struct {
 		want: []ExportRecords{
 			{
 				"J",
-				[]read.Record{{FirstName: "Justice"}},
+				[]Record{{FirstName: "Justice"}},
 				1,
 			},
 			{
 				"S",
-				[]read.Record{{FirstName: "Sabrina"}},
+				[]Record{{FirstName: "Sabrina"}},
 				1,
 			},
 			{
 				"T",
-				[]read.Record{{FirstName: "Thad"}, {FirstName: "Tyson"}},
+				[]Record{{FirstName: "Thad"}, {FirstName: "Tyson"}},
 				2,
 			},
 		},
@@ -94,34 +93,34 @@ var sortCases = []struct {
 		records: []ExportRecords{
 			{
 				"J",
-				[]read.Record{{FirstName: "Justice"}},
+				[]Record{{FirstName: "Justice"}},
 				1,
 			},
 			{
 				"S",
-				[]read.Record{{FirstName: "Sabrina"}},
+				[]Record{{FirstName: "Sabrina"}},
 				1,
 			},
 			{
 				"A",
-				[]read.Record{{FirstName: "Abraham"}, {FirstName: "Ashley"}},
+				[]Record{{FirstName: "Abraham"}, {FirstName: "Ashley"}},
 				2,
 			},
 		},
 		want: []ExportRecords{
 			{
 				"A",
-				[]read.Record{{FirstName: "Abraham"}, {FirstName: "Ashley"}},
+				[]Record{{FirstName: "Abraham"}, {FirstName: "Ashley"}},
 				2,
 			},
 			{
 				"J",
-				[]read.Record{{FirstName: "Justice"}},
+				[]Record{{FirstName: "Justice"}},
 				1,
 			},
 			{
 				"S",
-				[]read.Record{{FirstName: "Sabrina"}},
+				[]Record{{FirstName: "Sabrina"}},
 				1,
 			},
 		},
@@ -147,12 +146,12 @@ func assertFormatting(t testing.TB, got, want []ExportRecords) {
 
 var formatCases = []struct {
 	name          string
-	mappedExports map[string][]read.Record
+	mappedExports map[string][]Record
 	want          []ExportRecords
 }{
 	{
 		name: "multiple entries",
-		mappedExports: map[string][]read.Record{
+		mappedExports: map[string][]Record{
 			"J": {{FirstName: "Justice"}},
 			"S": {{FirstName: "Sabrina"}},
 			"T": {{FirstName: "Thad"}, {FirstName: "Tyson"}},
@@ -160,17 +159,17 @@ var formatCases = []struct {
 		want: []ExportRecords{
 			{
 				"J",
-				[]read.Record{{FirstName: "Justice"}},
+				[]Record{{FirstName: "Justice"}},
 				1,
 			},
 			{
 				"S",
-				[]read.Record{{FirstName: "Sabrina"}},
+				[]Record{{FirstName: "Sabrina"}},
 				1,
 			},
 			{
 				"T",
-				[]read.Record{{FirstName: "Thad"}, {FirstName: "Tyson"}},
+				[]Record{{FirstName: "Thad"}, {FirstName: "Tyson"}},
 				2,
 			},
 		},
@@ -187,7 +186,7 @@ func TestMapExport(t *testing.T) {
 	}
 }
 
-func assertMapping(t testing.TB, got, want map[string][]read.Record) {
+func assertMapping(t testing.TB, got, want map[string][]Record) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %q, want %q", got, want)
@@ -196,12 +195,12 @@ func assertMapping(t testing.TB, got, want map[string][]read.Record) {
 
 var mapCases = []struct {
 	name    string
-	records []read.Record
-	want    map[string][]read.Record
+	records []Record
+	want    map[string][]Record
 }{
 	{
 		name: "multiple entries",
-		records: []read.Record{
+		records: []Record{
 			{
 				FirstName: "Thad",
 			},
@@ -215,14 +214,14 @@ var mapCases = []struct {
 				FirstName: "Sabrina",
 			},
 		},
-		want: map[string][]read.Record{
+		want: map[string][]Record{
 			"J": {{FirstName: "Justice"}},
 			"S": {{FirstName: "Sabrina"}},
 			"T": {{FirstName: "Thad"}, {FirstName: "Tyson"}},
 		},
 	}, {
 		name: "all entries with the same letter",
-		records: []read.Record{
+		records: []Record{
 			{
 				FirstName: "Thad",
 			},
@@ -236,7 +235,7 @@ var mapCases = []struct {
 				FirstName: "Thar",
 			},
 		},
-		want: map[string][]read.Record{
+		want: map[string][]Record{
 			"T": {{FirstName: "Thad"}, {FirstName: "Tyson"}, {FirstName: "Thames"}, {FirstName: "Thar"}},
 		},
 	},
@@ -253,7 +252,7 @@ func TestRemoveDuplicates(t *testing.T) {
 
 }
 
-func assertDuplicate(t testing.TB, got, want []read.Record) {
+func assertDuplicate(t testing.TB, got, want []Record) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %q, want %q", got, want)
@@ -262,12 +261,12 @@ func assertDuplicate(t testing.TB, got, want []read.Record) {
 
 var duplicatesCases = []struct {
 	name    string
-	records []read.Record
-	want    []read.Record
+	records []Record
+	want    []Record
 }{
 	{
 		name: "multiple entries with one duplicate",
-		records: []read.Record{
+		records: []Record{
 			{
 				FirstName: "Thad",
 				LastName:  "Feest",
@@ -299,7 +298,7 @@ var duplicatesCases = []struct {
 				Created:   "August 29, 2018",
 				Balance:   "$6,996.45"},
 		},
-		want: []read.Record{
+		want: []Record{
 			{
 				FirstName: "Thad",
 				LastName:  "Feest",
@@ -326,7 +325,7 @@ var duplicatesCases = []struct {
 	},
 	{
 		name: "all duplicate entries",
-		records: []read.Record{
+		records: []Record{
 			{
 				FirstName: "Thad",
 				LastName:  "Feest",
@@ -344,7 +343,7 @@ var duplicatesCases = []struct {
 				Balance:   "$1,950.71",
 			},
 		},
-		want: []read.Record{
+		want: []Record{
 			{
 				FirstName: "Thad",
 				LastName:  "Feest",

@@ -1,23 +1,19 @@
-package read
+package records
 
 import (
 	"context"
-	"embed"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"net/http"
-	"strings"
 )
 
-// TODO: Make cfg outside packages and import them afterwards into reader.
-
-//go:embed apiservice.env
-var envURL embed.FS
+// TODO: change FileReader -> Collector
+// TODO: change ReadRecords -> TransformRecords
 
 // Record is the initial structure of the JSON from the API call. It is
-// unmarshalled here from the byte array given by reader.go with the TransformRecords function.
+// unmarshalled here from the byte array given by collector.go with the TransformRecords function.
 type Record struct {
 	FirstName string `json:"first"`
 	LastName  string `json:"last"`
@@ -34,9 +30,9 @@ func NewFileReader() *FileReader {
 	return &FileReader{}
 }
 
-// ReadRecords returns the Records which are fetched from the API call that was made to the const `url` found in driver/process.go.
-func (fr *FileReader) ReadRecords(ctx context.Context, recordsNr int) ([]Record, error) {
-	records, err := getRecords(ctx)
+// ReadRecords returns the Records which are fetched from the API call that was made to the const `url` found in cmd/controller.go.
+func (fr *FileReader) ReadRecords(ctx context.Context, recordsNr int, URL string) ([]Record, error) {
+	records, err := getRecords(ctx, URL)
 	if err != nil {
 		return nil, fmt.Errorf("could not get initial records: %w", err)
 	}
@@ -49,15 +45,11 @@ func (fr *FileReader) ReadRecords(ctx context.Context, recordsNr int) ([]Record,
 }
 
 // getRecords takes the url string and unmarshals the API response into an array of Record type with the unmarshalBody helper function.
-func getRecords(ctx context.Context) ([]Record, error) {
+func getRecords(ctx context.Context, URL string) ([]Record, error) {
 	client := &http.Client{}
-	url, err := getEnvURL()
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, URL, nil)
 	if err != nil {
-		return nil, fmt.Errorf("could not get the url from the env file: %w", err)
-	}
-	req, err := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-	if err != nil {
-		return nil, fmt.Errorf("could not use GET on url: %q, err: %w", url, err)
+		return nil, fmt.Errorf("could not use GET on url: %q, err: %w", URL, err)
 	}
 	res, err := client.Do(req)
 	if err != nil {
@@ -69,7 +61,7 @@ func getRecords(ctx context.Context) ([]Record, error) {
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, fmt.Errorf("could not read the body: %w", err)
+		return nil, fmt.Errorf("could not collectrec the body: %w", err)
 	}
 
 	err = res.Body.Close()
@@ -144,15 +136,4 @@ func addAdditionalRecords(records []Record, addRecords []Record, recordsNr int) 
 // isValid checks if the current number of records is smaller than the number set by the user.
 func isValid(recordsLen int, recordsNr int) bool {
 	return recordsLen < recordsNr
-}
-
-// getEnvURL fetches the URL from the .env file.
-func getEnvURL() (string, error) {
-	key := "SOURCE_URL"
-	u, err := envURL.ReadFile("apiservice.env")
-	if err != nil {
-		return "", fmt.Errorf("cannot read url from envfile: %w", err)
-	}
-	trimmedPrefixURL := strings.TrimPrefix(string(u), key+"=")
-	return trimmedPrefixURL, nil
 }

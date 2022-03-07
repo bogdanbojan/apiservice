@@ -1,4 +1,4 @@
-package input
+package config
 
 import "testing"
 

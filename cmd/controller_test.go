@@ -1,20 +1,19 @@
-package driver
+package cmd
 
 import (
-	"apiserv/read"
-	"apiserv/transform"
+	"apiserv/records"
 	"reflect"
 	"testing"
 )
 
 func TestTransformRecords(t *testing.T) {
-	rt := transform.NewFileDecoder()
+	rt := records.NewFileDecoder()
 	for _, rc := range recordsCases {
 		got, _ := rt.TransformRecords(rc.records)
 		assertEqual(t, got, rc.want)
 	}
 }
-func assertEqual(t testing.TB, got, want []transform.ExportRecords) {
+func assertEqual(t testing.TB, got, want []records.ExportRecords) {
 	t.Helper()
 	if !reflect.DeepEqual(got, want) {
 		t.Errorf("got %q, want %q", got, want)
@@ -23,12 +22,12 @@ func assertEqual(t testing.TB, got, want []transform.ExportRecords) {
 
 var recordsCases = []struct {
 	name    string
-	records []read.Record
-	want    []transform.ExportRecords
+	records []records.Record
+	want    []records.ExportRecords
 }{
 	{
 		name: "multiple entries with one duplicate",
-		records: []read.Record{
+		records: []records.Record{
 			{
 				FirstName: "Thad",
 				LastName:  "Feest",
@@ -60,10 +59,10 @@ var recordsCases = []struct {
 				Created:   "August 29, 2018",
 				Balance:   "$6,996.45"},
 		},
-		want: []transform.ExportRecords{
+		want: []records.ExportRecords{
 			{
 				"J",
-				[]read.Record{{
+				[]records.Record{{
 					FirstName: "Justice",
 					LastName:  "Keebler",
 					Email:     "magentarabbit07@gmail.com",
@@ -76,7 +75,7 @@ var recordsCases = []struct {
 			},
 			{
 				"S",
-				[]read.Record{{
+				[]records.Record{{
 					FirstName: "Sabrina",
 					LastName:  "Kuphal",
 					Email:     "whiterabbit70@gmail.com",
@@ -89,7 +88,7 @@ var recordsCases = []struct {
 			},
 			{
 				"T",
-				[]read.Record{{
+				[]records.Record{{
 					FirstName: "Thad",
 					LastName:  "Feest",
 					Email:     "Thad.Feest@cleve.name",
@@ -104,7 +103,7 @@ var recordsCases = []struct {
 	},
 	{
 		name: "entries that are only duplicates",
-		records: []read.Record{
+		records: []records.Record{
 			{
 				FirstName: "Thad",
 				LastName:  "Feest",
@@ -130,10 +129,10 @@ var recordsCases = []struct {
 				Balance:   "$1,950.71",
 			},
 		},
-		want: []transform.ExportRecords{
+		want: []records.ExportRecords{
 			{
 				"T",
-				[]read.Record{{
+				[]records.Record{{
 					FirstName: "Thad",
 					LastName:  "Feest",
 					Email:     "Thad.Feest@cleve.name",
@@ -148,7 +147,7 @@ var recordsCases = []struct {
 	},
 	{
 		name:    "empty entry",
-		records: []read.Record{},
+		records: []records.Record{},
 		want:    nil,
 	},
 }

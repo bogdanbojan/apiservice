@@ -1,7 +1,6 @@
-package write
+package records
 
 import (
-	"apiserv/transform"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -18,7 +17,7 @@ func NewFileWriter() *FileWriter {
 
 // WriteRecords exports the records after they have been filtered, formatted and grouped into
 // a JSON in the current user folder.
-func (fw *FileWriter) WriteRecords(records []transform.ExportRecords, filePath string) error {
+func (fw *FileWriter) WriteRecords(records []ExportRecords, filePath string) error {
 	file, err := marshalRecords(records)
 	if err != nil {
 		return err
@@ -30,7 +29,7 @@ func (fw *FileWriter) WriteRecords(records []transform.ExportRecords, filePath s
 	return nil
 }
 
-func marshalRecords(records []transform.ExportRecords) ([]byte, error) {
+func marshalRecords(records []ExportRecords) ([]byte, error) {
 	file, err := json.MarshalIndent(records, " ", "\t")
 	if err != nil {
 		return nil, fmt.Errorf("cannot marshal json: %w", err)
@@ -41,7 +40,7 @@ func marshalRecords(records []transform.ExportRecords) ([]byte, error) {
 func writeJSON(file []byte, filePath string) error {
 	err := ioutil.WriteFile(filePath, file, 0644)
 	if err != nil {
-		return fmt.Errorf("cannot write json: %w", err)
+		return fmt.Errorf("cannot writerec json: %w", err)
 	}
 	return nil
 }
