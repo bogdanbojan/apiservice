@@ -8,16 +8,16 @@ import (
 
 // TODO: WriteRecords should do one thing.
 
-type FileWriter struct{}
+type Writer struct{}
 
-// NewFileWriter constructs a new FileWriter instance.
-func NewFileWriter() *FileWriter {
-	return &FileWriter{}
+// NewWriter constructs a new Writer instance.
+func NewWriter() Writer {
+	return Writer{}
 }
 
 // WriteRecords exports the records after they have been filtered, formatted and grouped into
 // a JSON in the current user folder.
-func (fw *FileWriter) WriteRecords(records []ExportRecords, filePath string) error {
+func (Writer) WriteRecords(records []ExportRecords, filePath string) error {
 	file, err := marshalRecords(records)
 	if err != nil {
 		return err

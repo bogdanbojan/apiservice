@@ -10,10 +10,10 @@ import (
 func main() {
 	ctx := context.Background()
 	cfg := config.NewConfig()
-	fr := records.NewFileReader()
-	fd := records.NewFileDecoder()
-	fw := records.NewFileWriter()
-	err := Process(ctx, cfg, fr, fd, fw)
+	rc := records.NewCollector()
+	rt := records.NewTransformer()
+	rw := records.NewWriter()
+	err := Process(ctx, cfg, rc, rt, rw)
 	if err != nil {
 		log.Fatal(err)
 	}

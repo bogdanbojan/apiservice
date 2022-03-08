@@ -9,9 +9,6 @@ import (
 	"net/http"
 )
 
-// TODO: change FileReader -> Collector
-// TODO: change ReadRecords -> TransformRecords
-
 // Record is the initial structure of the JSON from the API call. It is
 // unmarshalled here from the byte array given by collector.go with the TransformRecords function.
 type Record struct {
@@ -23,15 +20,15 @@ type Record struct {
 	Balance   string `json:"balance"`
 }
 
-type FileReader struct{}
+type Collector struct{}
 
-// NewFileReader constructs a new FileReader instance.
-func NewFileReader() *FileReader {
-	return &FileReader{}
+// NewCollector constructs a new Collector instance.
+func NewCollector() Collector {
+	return Collector{}
 }
 
-// ReadRecords returns the Records which are fetched from the API call that was made to the const `url` found in cmd/controller.go.
-func (fr *FileReader) ReadRecords(ctx context.Context, recordsNr int, URL string) ([]Record, error) {
+// CollectRecords returns the Records which are fetched from the API call that was made to the const `url` found in cmd/controller.go.
+func (Collector) CollectRecords(ctx context.Context, recordsNr int, URL string) ([]Record, error) {
 	records, err := getRecords(ctx, URL)
 	if err != nil {
 		return nil, fmt.Errorf("could not get initial records: %w", err)

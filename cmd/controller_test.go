@@ -7,7 +7,7 @@ import (
 )
 
 func TestTransformRecords(t *testing.T) {
-	rt := records.NewFileDecoder()
+	rt := records.NewTransformer()
 	for _, rc := range recordsCases {
 		got, _ := rt.TransformRecords(rc.records)
 		assertEqual(t, got, rc.want)

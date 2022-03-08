@@ -5,8 +5,6 @@ import (
 	"sort"
 )
 
-// TODO: change FileDecoder -> Transformer
-
 // ExportRecords holds the JSON structure for the exported data. It groups the records obtained by the API
 // with an Index (first letter of the FirstName) and holds all the records that satisfy that condition in Records.
 type ExportRecords struct {
@@ -15,16 +13,16 @@ type ExportRecords struct {
 	TotalRecords int      `json:"total-records"`
 }
 
-type FileDecoder struct{}
+type Transformer struct{}
 
-// NewFileDecoder constructs a new FileDecoder instance.
-func NewFileDecoder() *FileDecoder {
-	return &FileDecoder{}
+// NewTransformer constructs a new Transformer instance.
+func NewTransformer() Transformer {
+	return Transformer{}
 }
 
 // TransformRecords unmarshals the JSON body data that is fetched from the API call. Then it processes
 // it returning an ExportRecords object.
-func (fd *FileDecoder) TransformRecords(records []Record) ([]ExportRecords, error) {
+func (Transformer) TransformRecords(records []Record) ([]ExportRecords, error) {
 	fmt.Println("Nr of records: ", len(records))
 	exportRecords := processExport(records)
 

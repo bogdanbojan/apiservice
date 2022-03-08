@@ -45,7 +45,7 @@ func (c *Config) Init() error {
 }
 
 // getRecordsNr is the getter method for how many records from the API call the user
-// wants to collectrec and process.
+// wants to collect and process.
 func getRecordsNr() (int, error) {
 	fmt.Println("Set the nr of records you want to collect: ")
 	var recordsNr int
