@@ -53,7 +53,6 @@ func formatExport(mappedExports map[string][]Record) []ExportRecords {
 	return exportRecords
 }
 
-// TODO: make sure you check for index out of bounds.
 // Maps the records to the first letter of FirstName.
 func mapExport(records []Record) map[string][]Record {
 	mappedExports := make(map[string][]Record)
