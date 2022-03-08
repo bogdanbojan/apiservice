@@ -57,7 +57,7 @@ func formatExport(mappedExports map[string][]Record) []ExportRecords {
 
 // Maps the records to the first letter of FirstName.
 func mapExport(records []Record) map[string][]Record {
-	mappedExports := make(map[string][]records.Record)
+	mappedExports := make(map[string][]Record)
 
 	for _, r := range records {
 		firstLetter := r.FirstName[:1]
@@ -77,8 +77,8 @@ func sortRecords(records []ExportRecords) []ExportRecords {
 
 // removeDuplicates gets rid of any duplicate entries from the provided records that come from the API call.
 func removeDuplicates(records []Record) []Record {
-	var uniqueRecords []records.Record // filter wo allocation
-	recordMap := make(map[records.Record]struct{})
+	var uniqueRecords []Record // filter wo allocation
+	recordMap := make(map[Record]struct{})
 
 	for _, record := range records {
 		if _, ok := recordMap[record]; !ok {

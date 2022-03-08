@@ -23,7 +23,7 @@ type Config struct {
 
 // ConfigRecords gets the nr of records and the file path that the user
 // inputs at the beginning of the program.
-func (fc *Config) init() error {
+func (c *Config) Init() error {
 	rn, err := getRecordsNr()
 	if err != nil {
 		return fmt.Errorf("cannot configure records number: %w", err)
@@ -37,9 +37,9 @@ func (fc *Config) init() error {
 		return fmt.Errorf("cannot configure envfile: %w", err)
 	}
 
-	fc.RecordsNr = rn
-	fc.FilePath = fp
-	fc.SourceURL = su
+	c.RecordsNr = rn
+	c.FilePath = fp
+	c.SourceURL = su
 
 	return nil
 }
@@ -47,7 +47,7 @@ func (fc *Config) init() error {
 // getRecordsNr is the getter method for how many records from the API call the user
 // wants to collectrec and process.
 func getRecordsNr() (int, error) {
-	fmt.Println("Set the nr of records you want to collectrec: ")
+	fmt.Println("Set the nr of records you want to collect: ")
 	var recordsNr int
 	_, err := fmt.Scanln(&recordsNr)
 

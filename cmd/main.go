@@ -1,7 +1,6 @@
 package main
 
 import (
-	"apiserv/cmd"
 	"apiserv/config"
 	"apiserv/records"
 	"context"
@@ -10,11 +9,11 @@ import (
 
 func main() {
 	ctx := context.Background()
-	fc := config.NewFileConfiger()
+	cfg := config.NewConfig()
 	fr := records.NewFileReader()
 	fd := records.NewFileDecoder()
 	fw := records.NewFileWriter()
-	err := cmd.Process(ctx, fc, fr, fd, fw)
+	err := Process(ctx, cfg, fr, fd, fw)
 	if err != nil {
 		log.Fatal(err)
 	}
