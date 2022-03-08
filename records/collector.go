@@ -3,7 +3,6 @@ package records
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"net/http"
@@ -64,11 +63,6 @@ func getRecords(ctx context.Context, URL string) ([]Record, error) {
 	err = res.Body.Close()
 	if err != nil {
 		return nil, fmt.Errorf("could not close the body: %w", err)
-	}
-
-	ok := json.Valid(body)
-	if !ok {
-		return nil, errors.New("error: JSON is not valid")
 	}
 
 	records, err := unmarshalBody(body)
