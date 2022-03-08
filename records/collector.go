@@ -57,7 +57,7 @@ func getRecords(ctx context.Context, URL string) ([]Record, error) {
 
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, fmt.Errorf("could not collectrec the body: %w", err)
+		return nil, fmt.Errorf("could not collect the body: %w", err)
 	}
 
 	err = res.Body.Close()
