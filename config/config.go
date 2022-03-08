@@ -14,15 +14,14 @@ func NewConfig() *Config {
 }
 
 // Config is the current setup for the service. It includes
-// the nr of records to be collectrec and the file path that the users wants to writerec to.
+// the nr of records to be collectred and the file path that the users wants to write to.
 type Config struct {
 	RecordsNr int
 	FilePath  string
 	SourceURL string
 }
 
-// ConfigRecords gets the nr of records and the file path that the user
-// inputs at the beginning of the program.
+// Init is the initialization function for the config.
 func (c *Config) Init() error {
 	rn, err := getRecordsNr()
 	if err != nil {
