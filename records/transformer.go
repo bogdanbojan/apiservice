@@ -10,7 +10,7 @@ import (
 type ExportRecords struct {
 	Index        string   `json:"index"`
 	Records      []Record `json:"records"`
-	TotalRecords int      `json:"total-records"`
+	TotalRecords int      `json:"total_records"`
 }
 
 type Transformer struct{}
@@ -53,13 +53,16 @@ func formatExport(mappedExports map[string][]Record) []ExportRecords {
 	return exportRecords
 }
 
+// TODO: make sure you check for index out of bounds.
 // Maps the records to the first letter of FirstName.
 func mapExport(records []Record) map[string][]Record {
 	mappedExports := make(map[string][]Record)
 
 	for _, r := range records {
-		firstLetter := r.FirstName[:1]
-		mappedExports[firstLetter] = append(mappedExports[firstLetter], r)
+		if r.FirstName != "" {
+			firstLetter := r.FirstName[:1]
+			mappedExports[firstLetter] = append(mappedExports[firstLetter], r)
+		}
 	}
 	return mappedExports
 }

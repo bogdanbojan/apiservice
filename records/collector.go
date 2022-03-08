@@ -78,6 +78,7 @@ func getRecords(ctx context.Context, URL string) ([]Record, error) {
 	return records, nil
 }
 
+// TODO: refactor this method so it does one thing.
 // validateRecordsNr checks that the user's records are exactly the number the user wanted. If not, it uses the helper function
 // getAdditionalRecords to get more records from the API.
 func validateRecordsNr(records []Record, recordsNr int, URL string) ([]Record, error) {
@@ -121,11 +122,10 @@ func getAdditionalRecords(records []Record, recordsNr int, URL string) ([]Record
 func addAdditionalRecords(records []Record, addRecords []Record, recordsNr int) []Record {
 	for _, r := range addRecords {
 		recordsLen := len(records)
-		if isValid(recordsLen, recordsNr) {
-			records = append(records, r)
-		} else {
+		if !isValid(recordsLen, recordsNr) {
 			break
 		}
+		records = append(records, r)
 	}
 	return records
 }
