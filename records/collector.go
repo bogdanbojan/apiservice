@@ -33,7 +33,7 @@ func (Collector) CollectRecords(ctx context.Context, recordsNr int, URL string) 
 	if err != nil {
 		return nil, fmt.Errorf("could not get initial records: %w", err)
 	}
-	validatedRecords, err := validateRecordsNr(records, recordsNr, URL)
+	validatedRecords, err := validateRecordsNr(ctx, records, recordsNr, URL)
 	if err != nil {
 		return nil, fmt.Errorf("could not get validatedRecords: %w", err)
 	}
@@ -81,16 +81,15 @@ func getRecords(ctx context.Context, URL string) ([]Record, error) {
 // TODO: refactor this method so it does one thing.
 // validateRecordsNr checks that the user's records are exactly the number the user wanted. If not, it uses the helper function
 // getAdditionalRecords to get more records from the API.
-func validateRecordsNr(records []Record, recordsNr int, URL string) ([]Record, error) {
-	if isValid(len(records), recordsNr) {
-		additionalRecords, err := getAdditionalRecords(records, recordsNr, URL)
-		if err != nil {
-			return nil, fmt.Errorf("could not get additional records: %w", err)
-		}
-		return additionalRecords, nil
-	} else {
+func validateRecordsNr(ctx context.Context, records []Record, recordsNr int, URL string) ([]Record, error) {
+	if !isValid(len(records), recordsNr) {
 		return records[:recordsNr], nil
 	}
+	additionalRecords, err := getAdditionalRecords(ctx, records, recordsNr, URL)
+	if err != nil {
+		return nil, fmt.Errorf("could not get additional records: %w", err)
+	}
+	return additionalRecords, nil
 }
 
 // unmarshalBody takes the byte slice given in the body of the API response and unmarshals it into a slice of Record type.
@@ -104,9 +103,8 @@ func unmarshalBody(body []byte) ([]Record, error) {
 }
 
 // getAdditionalRecords is a helper function that loops until it gets the records bounded by the number set by the user.
-func getAdditionalRecords(records []Record, recordsNr int, URL string) ([]Record, error) {
+func getAdditionalRecords(ctx context.Context, records []Record, recordsNr int, URL string) ([]Record, error) {
 	for len(records) < recordsNr {
-		ctx := context.Background()
 		addRecords, err := getRecords(ctx, URL)
 		if err != nil {
 			return nil, fmt.Errorf("could not get addRecords: %w", err)
