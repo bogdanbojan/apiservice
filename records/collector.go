@@ -102,23 +102,15 @@ func getAdditionalRecords(ctx context.Context, records []Record, recordsNr int, 
 		if err != nil {
 			return nil, fmt.Errorf("could not get addRecords: %w", err)
 		}
-		records = addAdditionalRecords(records, addRecords, recordsNr)
+		for _, r := range addRecords {
+			recordsLen := len(records)
+			if !isValid(recordsLen, recordsNr) {
+				break
+			}
+			records = append(records, r)
+		}
 	}
 	return records, nil
-}
-
-// addAdditionalRecords iterates through the records given by getAdditionalRecords and keeps adding them to
-// the slice `records` if and only if they are valid. That is, if the current records entries are smaller than
-// the users desired number.
-func addAdditionalRecords(records []Record, addRecords []Record, recordsNr int) []Record {
-	for _, r := range addRecords {
-		recordsLen := len(records)
-		if !isValid(recordsLen, recordsNr) {
-			break
-		}
-		records = append(records, r)
-	}
-	return records
 }
 
 // isValid checks if the current number of records is smaller than the number set by the user.

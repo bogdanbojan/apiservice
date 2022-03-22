@@ -8,54 +8,6 @@ import (
 
 var ctx = context.Background()
 
-func TestAddAdditionalRecords(t *testing.T) {
-	records := recordsCases[0].records
-	t.Run("don't add more records and return initial slice", func(t *testing.T) {
-		additionalRecords := recordsCases[1].records
-		got := addAdditionalRecords(records, additionalRecords, 1)
-		want := recordsCases[0].records
-		assertEqual(t, got, want)
-	})
-	t.Run("add more records to the initial slice", func(t *testing.T) {
-		additionalRecords := recordsCases[1].records
-		got := addAdditionalRecords(records, additionalRecords, 4)
-		want := []Record{
-			{
-				FirstName: "Thad",
-				LastName:  "Feest",
-				Email:     "Thad.Feest@cleve.name",
-				Address:   "77881 Schaefer Loaf",
-				Created:   "July 13, 2021",
-				Balance:   "$1,950.71",
-			},
-			{
-				FirstName: "Justice",
-				LastName:  "Keebler",
-				Email:     "magentarabbit07@gmail.com",
-				Address:   "173 Hyatt Crossroad",
-				Created:   "April 12, 2014",
-				Balance:   "$1,359.61"},
-			{
-				FirstName: "Sabrina",
-				LastName:  "Kuphal",
-				Email:     "whiterabbit70@gmail.com",
-				Address:   "03491 Howard Vista",
-				Created:   "August 29, 2018",
-				Balance:   "$6,996.45",
-			},
-			{
-				FirstName: "Abdiel",
-				LastName:  "Jenkins",
-				Email:     "Abdiel.Jenkins@tate.info",
-				Address:   "0196 Edmond Falls",
-				Created:   "May 7, 2016",
-				Balance:   "$5,424.08",
-			},
-		}
-		assertEqual(t, got, want)
-	})
-}
-
 func TestGetAdditionalRecords(t *testing.T) {
 	records := recordsCases[0].records
 	t.Run("nr of records is enough", func(t *testing.T) {
